@@ -1,12 +1,16 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import ShareButtons from '@/components/ShareButtons';
-import { getMeet, getMedalTable } from '@/lib/meet';
-import { decodeMeet } from '@/lib/meet-url';
+import { getMeet, getMedalTable, SNAPSHOT_SOURCE } from '@/lib/meet';
+import { decodeMeet, encodeMeet } from '@/lib/meet-url';
 import { medalText } from '@/lib/text';
 
 export const revalidate = 300;
 export const maxDuration = 60;
+
+export function generateStaticParams() {
+  return [{ meet: encodeMeet(SNAPSHOT_SOURCE) }];
+}
 
 export const metadata: Metadata = { title: 'Medal table' };
 

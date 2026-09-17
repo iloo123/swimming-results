@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import EventResults from '@/components/EventResults';
 import ShareButtons from '@/components/ShareButtons';
-import { getEvent, getEventSummaries, getMeet, getSlugLookup } from '@/lib/meet';
-import { decodeMeet } from '@/lib/meet-url';
+import { getEvent, getEventSummaries, getMeet, getSlugLookup, SNAPSHOT_SOURCE } from '@/lib/meet';
+import { decodeMeet, encodeMeet } from '@/lib/meet-url';
 import { eventText } from '@/lib/text';
 import { eventView } from '@/lib/view';
 
@@ -12,6 +12,17 @@ export const revalidate = 300;
 export const maxDuration = 60;
 
 type Params = { params: Promise<{ meet: string; id: string }> };
+
+/**
+ * The meet this app ships data for is rendered at build time, so its pages are static
+ * files on the CDN - reachable even if the source site is not. Every other meet is
+ * rendered on demand and cached from there.
+ */
+export async function generateStaticParams() {
+  const meet = await getMeet(SNAPSHOT_SOURCE);
+  const slug = encodeMeet(SNAPSHOT_SOURCE);
+  return meet.events.map((e) => ({ meet: slug, id: e.id }));
+}
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { meet: slug, id } = await params;
