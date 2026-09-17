@@ -19,6 +19,8 @@ npm run build && npm start
 npm run lint           # tsc --noEmit
 ```
 
+Live: **https://swimming-mv.vercel.app**
+
 ## Deploy to Vercel
 
 The repo root is the app - no root-directory setting needed.
@@ -36,8 +38,12 @@ Or push to GitHub and import the repo at vercel.com/new (framework is detected a
 | `MEET_REVALIDATE` | `300` | Seconds a source page is cached before it is re-fetched |
 | `NEXT_PUBLIC_SITE_URL` | Vercel's production URL | Absolute base for share-card image URLs |
 
-`vercel.json` pins the functions to `sin1` (Singapore) - the closest region to the Maldives.
-Change or drop it if your meets are hosted elsewhere.
+There is no `vercel.json` and `next.config.ts` is empty, on purpose. An earlier
+`outputFileTracingExcludes: { '*': ['dist/**'] }` - meant to keep this repo's `dist/`
+out of the bundle - also matched `node_modules/next/dist/**`, which stripped Next's own
+server code from every function: static pages served fine while every function crashed
+at boot with `Cannot find module 'next/dist/server/node-environment'`. Keep build-output
+exclusions out of that option; `.vercelignore` is the right place for them.
 
 ## Routes
 
@@ -57,8 +63,10 @@ Event and swimmer routes also serve an `opengraph-image`, so a shared link previ
 
 1. `evtindex.htm` gives the sessions and the event list.
 2. Every event page is fetched (12 at a time) and parsed.
-3. Each fetch is cached by Next for `MEET_REVALIDATE` seconds and tagged with the meet URL,
-   so a re-render only re-downloads what changed upstream. **Refresh now** in the header drops
+3. A meet is scraped at most once per process per `MEET_REVALIDATE` window, and each fetch
+   is cached by Next and tagged with the meet URL, so a re-render only re-downloads what
+   changed upstream. (Without the per-process memo, a build of 150 pages asked the source
+   site for all 146 of its pages 150 times over.) **Refresh now** in the header drops
    that cache for the current meet - the button to press while a meet is still running.
 4. If the source site is unreachable and you asked for the meet in `data/meet.json`,
    the bundled snapshot is served instead of an error.
@@ -103,5 +111,7 @@ npm run static                                    # dist/index.html, one self-co
   resolve to localhost or a private range are refused.
 - A swimmer's medal tally includes relay legs; the medal *table* counts a relay once for the school.
 - Times are unofficial, exactly as the source states. Rankings and medal counts are computed here.
+- `/api/diag?meet=<slug>` reports what the server itself sees when it reaches for a meet:
+  region, and the status and timing of the source pages over both https and http.
 - In the 2026 meet, event #402 (Boys 50 Back Higher Secondary, Prelims) is published empty
   upstream - the page says so rather than inventing rows.
