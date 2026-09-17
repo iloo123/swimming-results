@@ -74,8 +74,10 @@ export const loadMeet = cache(async (base: string): Promise<MeetResult> => {
   const tried: string[] = [];
   for (const candidate of [base, insecureVariant(base)].filter(Boolean)) {
     try {
+      // Probe once with a short fuse: when the source site is down, every render that
+      // waits on it is a render someone is staring at. The snapshot is one second away.
+      await pageFetcher(candidate, 8_000, 1)('evtindex.htm');
       const fetchPage = pageFetcher(candidate);
-      await fetchPage('evtindex.htm'); // cheap reachability check; the result is cached for the scrape
       const meet = await scrapeMeet(candidate, fetchPage);
       memo.set(base, { at: Date.now(), meet });
       return { ok: true, meet };
