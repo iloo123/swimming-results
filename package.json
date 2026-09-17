@@ -1,0 +1,28 @@
+{
+  "name": "results-mv-scrapper",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Scrapes HY-TEK Real Time Results meets from results.mv into JSON and builds a browsable single-file results viewer.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "tsc --noEmit",
+    "snapshot": "tsx scripts/snapshot.mts",
+    "static": "node build.mjs",
+    "static:refresh": "tsx scripts/snapshot.mts --fresh && node build.mjs"
+  },
+  "dependencies": {
+    "next": "^16.3.5",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.3"
+  }
+}

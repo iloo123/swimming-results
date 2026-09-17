@@ -1,0 +1,829 @@
+<title>Raajje Junior SC 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root {
+  --ground:#EFF4F5; --surface:#FFFFFF; --surface-2:#E4ECEE; --raise:#FAFCFC;
+  --ink:#0B2027; --ink-2:#496772; --ink-3:#7793A0;
+  --line:#CFDDE1; --line-soft:#E2EBED;
+  --accent:#0A757F; --accent-ink:#07555D; --accent-soft:#D4EAEC;
+  --gold:#A8801F; --silver:#6F7D86; --bronze:#9C5F2A;
+  --gold-bg:#F6EBCD; --silver-bg:#E4E9EC; --bronze-bg:#F2E0D1;
+  --danger:#A63228; --warn:#8A5D0B; --on-accent:#FFFFFF; --shadow:0 1px 2px rgba(11,32,39,.06), 0 8px 24px -16px rgba(11,32,39,.35);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:#071317; --surface:#0D2027; --surface-2:#132D36; --raise:#122A32;
+    --ink:#E4EFF1; --ink-2:#92ADB6; --ink-3:#6B8994;
+    --line:#1C3B45; --line-soft:#173038;
+    --accent:#45C3CB; --accent-ink:#8FDDE2; --accent-soft:#0F343A;
+    --gold:#E2B855; --silver:#B4C1C8; --bronze:#D08D51;
+    --gold-bg:#2C2410; --silver-bg:#1B2A30; --bronze-bg:#2E1E11;
+    --danger:#F0897E; --warn:#E2B855; --on-accent:#04181C; --on-accent:#04181C; --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"] {
+  --ground:#071317; --surface:#0D2027; --surface-2:#132D36; --raise:#122A32;
+  --ink:#E4EFF1; --ink-2:#92ADB6; --ink-3:#6B8994;
+  --line:#1C3B45; --line-soft:#173038;
+  --accent:#45C3CB; --accent-ink:#8FDDE2; --accent-soft:#0F343A;
+  --gold:#E2B855; --silver:#B4C1C8; --bronze:#D08D51;
+  --gold-bg:#2C2410; --silver-bg:#1B2A30; --bronze-bg:#2E1E11;
+  --danger:#F0897E; --warn:#E2B855; --on-accent:#04181C; --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+}
+
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Public Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3 { font-family:"Archivo", ui-sans-serif, system-ui, sans-serif; margin:0; text-wrap:balance; }
+button, select, input { font:inherit; color:inherit; }
+a { color:var(--accent-ink); }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:2px; }
+
+/* ---------- lane rope motif ---------- */
+.rope {
+  height:6px; flex:none;
+  background:repeating-linear-gradient(90deg, var(--accent) 0 14px, var(--accent-soft) 14px 20px, var(--accent) 20px 34px, transparent 34px 40px);
+  opacity:.9;
+}
+
+/* ---------- shell ---------- */
+.masthead { background:var(--surface); border-bottom:1px solid var(--line); }
+.masthead-inner {
+  max-width:1280px; margin:0 auto; padding:20px 24px 18px;
+  display:flex; flex-wrap:wrap; gap:16px 28px; align-items:flex-end; justify-content:space-between;
+}
+.eyebrow {
+  font-family:"IBM Plex Mono", ui-monospace, monospace; font-size:11px; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--accent-ink);
+}
+.masthead h1 { font-size:clamp(20px, 3.4vw, 30px); font-weight:800; letter-spacing:-.02em; line-height:1.1; margin-top:6px; }
+.meet-meta { font-size:13px; color:var(--ink-2); margin-top:6px; }
+.meet-meta span + span::before { content:"\00B7"; margin:0 8px; color:var(--ink-3); }
+.stats { display:flex; gap:22px; }
+.stat-n { font-family:"Archivo"; font-size:22px; font-weight:700; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+.stat-l { font-family:"IBM Plex Mono", monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); }
+
+.layout { max-width:1280px; margin:0 auto; padding:22px 24px 64px; display:grid; grid-template-columns:304px minmax(0,1fr); gap:24px; align-items:start; }
+.panel { background:var(--surface); border:1px solid var(--line); border-radius:6px; box-shadow:var(--shadow); }
+.sidebar { position:sticky; top:16px; display:flex; flex-direction:column; gap:14px; }
+
+/* ---------- controls ---------- */
+.nav { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding:3px; background:var(--surface-2); border-radius:6px; border:1px solid var(--line); }
+.nav button {
+  background:transparent; border:0; border-radius:4px; padding:7px 4px; cursor:pointer;
+  font-family:"IBM Plex Mono", monospace; font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-2);
+}
+.nav button:hover { color:var(--ink); }
+.nav button[aria-selected="true"] { background:var(--surface); color:var(--accent-ink); font-weight:600; box-shadow:var(--shadow); }
+
+.controls { padding:16px; display:flex; flex-direction:column; gap:14px; }
+.field { display:flex; flex-direction:column; gap:5px; }
+.field > label { font-family:"IBM Plex Mono", monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3); }
+select, input[type="search"] {
+  width:100%; padding:9px 10px; background:var(--raise); border:1px solid var(--line); border-radius:4px;
+  appearance:none; -webkit-appearance:none;
+}
+select { background-image:linear-gradient(45deg,transparent 50%,var(--ink-2) 50%),linear-gradient(135deg,var(--ink-2) 50%,transparent 50%); background-position:calc(100% - 17px) 50%, calc(100% - 12px) 50%; background-size:5px 5px; background-repeat:no-repeat; padding-right:30px; }
+select:hover, input[type="search"]:hover { border-color:var(--ink-3); }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.event-select { font-weight:500; }
+.hint { font-size:12px; color:var(--ink-3); }
+.reset { align-self:flex-start; background:none; border:0; padding:0; color:var(--accent-ink); font-size:12px; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+
+/* ---------- event header ---------- */
+.event-head { padding:18px 22px 16px; display:flex; flex-direction:column; gap:10px; border-bottom:1px solid var(--line-soft); }
+.event-num { font-family:"IBM Plex Mono", monospace; font-size:12px; font-weight:600; color:var(--accent-ink); letter-spacing:.06em; }
+.event-title { font-size:clamp(18px,2.6vw,25px); font-weight:700; letter-spacing:-.015em; }
+.tags { display:flex; flex-wrap:wrap; gap:6px; }
+.tag {
+  font-family:"IBM Plex Mono", monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+  padding:3px 8px; border:1px solid var(--line); border-radius:3px; color:var(--ink-2); background:var(--raise);
+}
+.tag.solid { background:var(--accent-soft); border-color:transparent; color:var(--accent-ink); font-weight:600; }
+.actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:2px; }
+.btn {
+  display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+  background:var(--raise); border:1px solid var(--line); border-radius:4px; padding:7px 12px;
+  font-size:13px; font-weight:500; color:var(--ink);
+}
+.btn:hover { border-color:var(--accent); color:var(--accent-ink); }
+.btn.primary { background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
+.btn.primary:hover { filter:brightness(1.08); border-color:var(--accent); color:var(--on-accent); }
+.btn svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.btn.ghost { background:transparent; }
+.nav-pair { display:flex; gap:8px; margin-left:auto; }
+
+/* ---------- results ---------- */
+.section-head {
+  display:flex; align-items:baseline; gap:10px; padding:16px 22px 8px;
+  font-family:"IBM Plex Mono", monospace; font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2);
+}
+.section-head::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; min-width:560px; }
+th {
+  text-align:left; font-family:"IBM Plex Mono", monospace; font-size:10px; font-weight:500;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3);
+  padding:6px 10px; border-bottom:1px solid var(--line-soft); white-space:nowrap;
+}
+td { padding:9px 10px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+tbody tr:hover td { background:var(--raise); }
+th:first-child, td:first-child { padding-left:22px; }
+th:last-child, td:last-child { padding-right:22px; }
+.c-place { width:52px; }
+.c-age { width:46px; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+.c-team { white-space:nowrap; color:var(--ink-2); }
+.c-time { text-align:right; white-space:nowrap; font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums; }
+th.c-time { text-align:right; }
+.c-time.seed { color:var(--ink-3); font-weight:400; }
+.c-time.result { font-weight:600; font-size:15px; }
+.place {
+  display:inline-flex; align-items:center; justify-content:center; min-width:26px; height:24px; padding:0 6px;
+  border-radius:3px; font-family:"IBM Plex Mono", monospace; font-size:13px; font-weight:600; font-variant-numeric:tabular-nums;
+  background:var(--surface-2); color:var(--ink-2);
+}
+.place.m1 { background:var(--gold-bg); color:var(--gold); }
+.place.m2 { background:var(--silver-bg); color:var(--silver); }
+.place.m3 { background:var(--bronze-bg); color:var(--bronze); }
+.place.none { background:transparent; color:var(--ink-3); }
+.swimmer { background:none; border:0; padding:0; cursor:pointer; text-align:left; font:inherit; font-weight:500; color:var(--ink); border-bottom:1px dotted var(--line); }
+.swimmer:hover { color:var(--accent-ink); border-bottom-color:var(--accent); }
+.legs { margin-top:5px; display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:2px 16px; font-size:12.5px; color:var(--ink-2); }
+.legs span b { font-family:"IBM Plex Mono", monospace; font-weight:500; color:var(--ink-3); margin-right:5px; }
+.status { font-family:"IBM Plex Mono", monospace; font-weight:600; font-size:12px; letter-spacing:.06em; }
+.status.dq { color:var(--danger); }
+.status.ns { color:var(--warn); }
+tr.cut td { border-bottom:1px dashed var(--line); }
+.squad { color:var(--ink-3); font-family:"IBM Plex Mono", monospace; font-size:12px; }
+.empty-note { padding:28px 22px 32px; color:var(--ink-2); }
+.result-count { padding:10px 22px 18px; font-size:12.5px; color:var(--ink-3); }
+
+/* ---------- swimmer + medals views ---------- */
+.list { display:flex; flex-direction:column; }
+.list button {
+  display:flex; align-items:baseline; gap:12px; width:100%; text-align:left; cursor:pointer;
+  background:none; border:0; border-bottom:1px solid var(--line-soft); padding:11px 22px; color:inherit;
+}
+.list button:hover { background:var(--raise); }
+.list .nm { font-weight:600; }
+.list .mt { font-size:12.5px; color:var(--ink-3); margin-left:auto; text-align:right; white-space:nowrap; }
+.athlete-head { padding:20px 22px 16px; border-bottom:1px solid var(--line-soft); }
+.athlete-head h2 { font-size:25px; font-weight:800; letter-spacing:-.02em; }
+.pb { padding:14px 22px; border-bottom:1px solid var(--line-soft); display:flex; flex-wrap:wrap; gap:18px 26px; }
+.pb div { display:flex; flex-direction:column; gap:1px; }
+.pb .v { font-family:"IBM Plex Mono", monospace; font-size:16px; font-weight:600; font-variant-numeric:tabular-nums; }
+.pb .k { font-family:"IBM Plex Mono", monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); }
+.linkish { background:none; border:0; padding:0; cursor:pointer; font:inherit; color:var(--accent-ink); text-align:left; }
+.linkish:hover { text-decoration:underline; text-underline-offset:3px; }
+.medal-bar { display:inline-flex; gap:3px; }
+.medal-bar i { width:9px; height:9px; border-radius:50%; display:inline-block; font-style:normal; }
+.panel-head { padding:18px 22px 14px; border-bottom:1px solid var(--line-soft); display:flex; flex-wrap:wrap; gap:10px; align-items:baseline; }
+.panel-head h2 { font-size:21px; font-weight:700; letter-spacing:-.015em; }
+.panel-head p { margin:0; font-size:13px; color:var(--ink-2); }
+
+/* ---------- toast ---------- */
+#toast {
+  position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(14px);
+  background:var(--ink); color:var(--ground); padding:10px 18px; border-radius:4px; font-size:13.5px; font-weight:500;
+  opacity:0; pointer-events:none; transition:opacity .18s ease, transform .18s ease; z-index:50;
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+.footer { max-width:1280px; margin:0 auto; padding:0 24px 40px; font-size:12.5px; color:var(--ink-3); }
+.footer a { color:var(--ink-2); }
+
+@media (max-width:900px) {
+  .layout { grid-template-columns:minmax(0,1fr); padding:16px 14px 48px; gap:16px; }
+  .sidebar { position:static; }
+  .masthead-inner { padding:16px 14px 14px; }
+  .stats { gap:16px; }
+  th:first-child, td:first-child { padding-left:14px; }
+  th:last-child, td:last-child { padding-right:14px; }
+  .event-head, .section-head, .result-count, .panel-head, .athlete-head, .pb { padding-left:14px; padding-right:14px; }
+  .list button { padding-left:14px; padding-right:14px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+@media print { .sidebar, .actions, .masthead .stats { display:none; } .layout { display:block; } .panel { border:0; box-shadow:none; } }
+</style>
+
+<div class="rope"></div>
+<header class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <div class="eyebrow" id="meet-eyebrow">Maldives Swimming</div>
+      <h1 id="meet-title">Meet Results</h1>
+      <div class="meet-meta" id="meet-meta"></div>
+    </div>
+    <div class="stats" id="meet-stats"></div>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="sidebar">
+    <div class="nav" role="tablist">
+      <button role="tab" id="tab-events" aria-selected="true">Events</button>
+      <button role="tab" id="tab-swimmers" aria-selected="false">Swimmers</button>
+      <button role="tab" id="tab-medals" aria-selected="false">Medals</button>
+    </div>
+    <div class="panel controls">
+      <div class="field">
+        <label for="eventSelect">Event</label>
+        <select id="eventSelect" class="event-select"></select>
+        <div class="hint" id="eventCount"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label for="fRound">Round</label><select id="fRound"></select></div>
+        <div class="field"><label for="fCategory">Category</label><select id="fCategory"></select></div>
+        <div class="field"><label for="fGender">Gender</label><select id="fGender"></select></div>
+        <div class="field"><label for="fStroke">Stroke</label><select id="fStroke"></select></div>
+      </div>
+      <div class="field">
+        <label for="fTeam">School / team</label>
+        <select id="fTeam"></select>
+      </div>
+      <div class="field">
+        <label for="fQuery">Find a swimmer</label>
+        <input type="search" id="fQuery" placeholder="Name&hellip;" autocomplete="off" spellcheck="false">
+        <div class="hint" id="queryHint"></div>
+      </div>
+      <button class="reset" id="reset">Clear all filters</button>
+    </div>
+  </aside>
+
+  <section class="panel" id="main-panel" aria-live="polite"></section>
+</main>
+
+<div class="footer">
+  <p>Times are unofficial and mirror the HY-TEK Real Time Results published at
+    <a id="source-link" href="#" target="_blank" rel="noopener">results.mv</a>. Rankings, medal counts and personal-best
+    lists on this page are computed from those published results.</p>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script id="meet-data" type="application/json">__MEET_JSON__</script>
+<script>
+(() => {
+  "use strict";
+  const DATA = JSON.parse(document.getElementById("meet-data").textContent);
+  const EVENTS = DATA.events;
+  const byId = new Map(EVENTS.map((e) => [e.id, e]));
+  const $ = (s) => document.querySelector(s);
+  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  const FINAL_RE = /final/i;
+
+  /* ----------------------------------------------------------- indexes */
+  const sessionsById = new Map(DATA.sessions.map((s) => [s.number, s]));
+  const nameOf = (row) => row.fullName || row.name || "";
+  const key = (name, team) => `${name.toLowerCase().trim()}|${team.toLowerCase().trim()}`;
+
+  const athletes = new Map(); // key -> {name, team, entries:[]}
+  const touch = (name, team) => {
+    const k = key(name, team);
+    let a = athletes.get(k);
+    if (!a) athletes.set(k, (a = { key: k, name, team, entries: [], relays: [] }));
+    if (name.length > a.name.length) a.name = name; // prefer the untruncated spelling
+    return a;
+  };
+  for (const ev of EVENTS)
+    for (const sec of ev.sections)
+      for (const row of sec.rows) {
+        if (row.name) touch(nameOf(row), row.team).entries.push({ ev, sec, row });
+        for (const sw of row.swimmers || []) touch(sw.name, row.team).relays.push({ ev, sec, row, leg: sw });
+      }
+  const athleteList = [...athletes.values()].sort((a, b) => a.name.localeCompare(b.name));
+
+  const medalTable = (() => {
+    const t = new Map();
+    for (const ev of EVENTS) {
+      if (ev.round !== "Finals") continue;
+      for (const sec of ev.sections) {
+        if (!FINAL_RE.test(sec.name)) continue;
+        for (const row of sec.rows) {
+          if (!row.place || row.place > 3 || row.status) continue;
+          const r = t.get(row.team) || { team: row.team, 1: 0, 2: 0, 3: 0, total: 0 };
+          r[row.place]++; r.total++; t.set(row.team, r);
+        }
+      }
+    }
+    return [...t.values()].sort((a, b) => b[1] - a[1] || b[2] - a[2] || b[3] - a[3] || a.team.localeCompare(b.team));
+  })();
+
+  const publishedEvents = EVENTS.filter((e) => !e.empty);
+  const rowCount = EVENTS.reduce((n, e) => n + e.sections.reduce((m, s) => m + s.rows.length, 0), 0);
+
+  /* ------------------------------------------------------------- state */
+  const state = { view: "events", event: publishedEvents[0]?.id || EVENTS[0].id, athlete: "", round: "", category: "", gender: "", stroke: "", team: "", q: "" };
+
+  function readHash() {
+    const p = new URLSearchParams(location.hash.replace(/^#/, ""));
+    // A shared link carries its whole state: anything it omits falls back to the default,
+    // so "#event=..." always opens on that event rather than inheriting the last view.
+    state.view = p.get("view") || "events";
+    state.athlete = p.get("athlete") || "";
+    for (const k of ["event", "round", "category", "gender", "stroke", "team", "q"]) state[k] = p.get(k) || "";
+    if (!state.event) state.event = publishedEvents[0].id;
+    if (!byId.has(state.event)) state.event = publishedEvents[0].id;
+    if (!["events", "swimmers", "medals"].includes(state.view)) state.view = "events";
+  }
+  function writeHash(replace) {
+    const p = new URLSearchParams();
+    if (state.view !== "events") p.set("view", state.view);
+    if (state.view === "swimmers" && state.athlete) p.set("athlete", state.athlete);
+    if (state.view === "events") p.set("event", state.event);
+    for (const k of ["round", "category", "gender", "stroke", "team", "q"]) if (state[k]) p.set(k, state[k]);
+    const h = "#" + p.toString();
+    if (h === location.hash) return;
+    if (replace) history.replaceState(null, "", h); else history.pushState(null, "", h);
+  }
+
+  /* ----------------------------------------------------------- filters */
+  const uniq = (fn) => [...new Set(EVENTS.map(fn).filter(Boolean))];
+  const FILTERS = [
+    ["fRound", "round", "All rounds", ["Prelims", "Finals"]],
+    ["fCategory", "category", "All categories", ["Lower Secondary", "Secondary", "Higher Secondary", "EAD"].filter((c) => uniq((e) => e.category).includes(c))],
+    ["fGender", "gender", "All", uniq((e) => e.gender)],
+    ["fStroke", "stroke", "All strokes", uniq((e) => e.stroke)],
+    ["fTeam", "team", "All schools", DATA.teams],
+  ];
+  for (const [id, k, allLabel, opts] of FILTERS) {
+    const sel = document.getElementById(id);
+    sel.append(new Option(allLabel, ""));
+    for (const o of opts) sel.append(new Option(o, o));
+    sel.addEventListener("change", () => { state[k] = sel.value; if (k === "team") { /* row-level */ } render(); });
+  }
+
+  const eventMatches = (e) =>
+    (!state.round || e.round === state.round) &&
+    (!state.category || e.category === state.category) &&
+    (!state.gender || e.gender === state.gender) &&
+    (!state.stroke || e.stroke === state.stroke);
+
+  const rowMatches = (row) => {
+    if (state.team && row.team !== state.team) return false;
+    if (state.q) {
+      const q = state.q.toLowerCase();
+      const hay = [nameOf(row), row.name || "", row.team, ...(row.swimmers || []).map((s) => s.name)].join(" ").toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  };
+
+  /* ------------------------------------------------------- event select */
+  const eventLabel = (e) => `#${e.number} ${e.title}${e.round ? " \u00b7 " + e.round : ""}${e.empty ? " (no results)" : ""}`;
+
+  function renderEventSelect() {
+    const sel = $("#eventSelect");
+    sel.textContent = "";
+    const matching = EVENTS.filter(eventMatches);
+    const groups = new Map();
+    for (const e of matching) (groups.get(e.session) || groups.set(e.session, []).get(e.session)).push(e);
+    for (const [num, evs] of [...groups].sort((a, b) => a[0] - b[0])) {
+      const s = sessionsById.get(num) || { name: "Session " + num };
+      const g = el("optgroup");
+      g.label = `${s.name} \u2014 ${s.weekday || ""} ${s.date || ""} ${s.time ? "\u00b7 " + s.time : ""}`.replace(/\s+/g, " ").trim();
+      for (const e of evs) g.append(new Option(eventLabel(e), e.id));
+      sel.append(g);
+    }
+    if (!matching.length) { sel.append(new Option("No events match these filters", "")); sel.disabled = true; }
+    else sel.disabled = false;
+    if (matching.length && !matching.some((e) => e.id === state.event)) state.event = matching[0].id;
+    sel.value = state.event;
+    $("#eventCount").textContent = `${matching.length} of ${EVENTS.length} events${matching.length ? " \u00b7 " + DATA.sessions.length + " sessions" : ""}`;
+  }
+
+  /* --------------------------------------------------------- rendering */
+  function medalClass(row, sec) { return row.status || !row.place || row.place > 3 || !FINAL_RE.test(sec.name) ? "" : " m" + row.place; }
+
+  function renderEventView() {
+    const ev = byId.get(state.event);
+    const panel = $("#main-panel");
+    panel.textContent = "";
+    if (!ev) { panel.append(el("div", "empty-note", "No event selected.")); return; }
+
+    const head = el("div", "event-head");
+    head.append(el("div", "event-num", `Event ${ev.number}`));
+    head.append(el("h2", "event-title", ev.title));
+    const tags = el("div", "tags");
+    const s = sessionsById.get(ev.session);
+    if (ev.round) tags.append(el("span", "tag solid", ev.round));
+    for (const t of [ev.category, ev.gender, ev.distance ? ev.distance + "m" : "", ev.stroke].filter(Boolean)) tags.append(el("span", "tag", t));
+    if (s) tags.append(el("span", "tag", `${s.name} \u00b7 ${s.weekday || ""} ${s.date || ""}`.trim()));
+    head.append(tags);
+
+    const actions = el("div", "actions");
+    actions.append(btn("Share event", "share", () => shareCurrent(ev), true));
+    if (!ev.empty) actions.append(btn("Copy results", "copy", () => copyText(eventText(ev), "Results copied")));
+    const src = el("a", "btn ghost", "Original page");
+    src.href = ev.url; src.target = "_blank"; src.rel = "noopener";
+    actions.append(src);
+    const pair = el("div", "nav-pair");
+    pair.append(btn("Prev", "prev", () => step(-1)));
+    pair.append(btn("Next", "next", () => step(1)));
+    actions.append(pair);
+    head.append(actions);
+    panel.append(head);
+
+    if (ev.empty) {
+      panel.append(el("div", "empty-note", "No results have been published for this event yet. Pick another event, or open the original page to check again."));
+      return;
+    }
+
+    let shown = 0, total = 0;
+    for (const sec of ev.sections) {
+      const visible = sec.rows.filter(rowMatches);
+      total += sec.rows.length;
+      shown += visible.length;
+      if (!visible.length) continue;
+      const sh = el("div", "section-head");
+      sh.append(el("span", null, sec.name));
+      panel.append(sh);
+      panel.append(buildTable(ev, sec, visible));
+    }
+    if (!shown) panel.append(el("div", "empty-note", `Nothing in this event matches ${state.q ? `\u201c${state.q}\u201d` : "that filter"}.`));
+    const note = el("div", "result-count");
+    note.textContent = shown === total ? `${total} ${ev.relay ? "teams" : "swimmers"}${ev.stamp ? " \u00b7 results as of " + ev.stamp : ""}` : `${shown} of ${total} shown`;
+    panel.append(note);
+  }
+
+  function buildTable(ev, sec, rows) {
+    const wrap = el("div", "table-wrap");
+    const table = el("table");
+    const thead = el("thead");
+    const tr = el("tr");
+    const cols = ev.relay ? ["", "Team"] : ["", "Name", "Age", "Team"];
+    for (const c of cols) { const th = el("th", c === "" ? "c-place" : c === "Age" ? "c-age" : c === "Team" ? "c-team" : null, c); tr.append(th); }
+    const timeCols = ev.columns.length ? ev.columns : ["Time"];
+    for (const c of timeCols) tr.append(el("th", "c-time", c));
+    thead.append(tr); table.append(thead);
+
+    const tbody = el("tbody");
+    for (const row of rows) {
+      const trr = el("tr", row.cut ? "cut" : null);
+      const place = el("td", "c-place");
+      const p = el("span", "place" + (row.place ? medalClass(row, sec) : " none"), row.place ? String(row.place) : "\u2014");
+      place.append(p); trr.append(place);
+
+      if (!ev.relay) {
+        const nameTd = el("td");
+        const b = el("button", "swimmer", nameOf(row));
+        b.addEventListener("click", () => openAthlete(key(nameOf(row), row.team)));
+        nameTd.append(b);
+        trr.append(nameTd);
+        trr.append(el("td", "c-age", row.age || ""));
+        trr.append(el("td", "c-team", row.team));
+      } else {
+        const td = el("td");
+        const line = el("div");
+        line.append(el("span", null, row.team));
+        if (row.squad) line.append(el("span", "squad", "  \u2019" + row.squad + "\u2019"));
+        td.append(line);
+        if (row.swimmers && row.swimmers.length) {
+          const legs = el("div", "legs");
+          for (const sw of row.swimmers) {
+            const sp = el("span");
+            sp.append(el("b", null, sw.leg + ")"));
+            const b = el("button", "swimmer", sw.name);
+            b.addEventListener("click", () => openAthlete(key(sw.name, row.team)));
+            sp.append(b);
+            if (sw.age) sp.append(el("span", null, " " + sw.age));
+            legs.append(sp);
+          }
+          td.append(legs);
+        }
+        trr.append(td);
+      }
+
+      // A swimmer who missed the final has only a prelim time on the line, so the
+      // last filled column - not the last column - is the one to emphasise.
+      const values = timeCols.map((label, i) => {
+        const t = (row.times || []).find((x) => x.label === label);
+        return t ? t.value : "";
+      });
+      const lastFilled = values.reduce((acc, v, i) => (v ? i : acc), -1);
+      values.forEach((v, i) => {
+        const td = el("td", "c-time " + (i === lastFilled ? "result" : "seed"));
+        if (/^(DQ|NS|DFS|SCR|NT)$/.test(v)) td.append(el("span", "status " + (v === "DQ" ? "dq" : "ns"), v));
+        else td.textContent = v || (lastFilled < 0 && i === values.length - 1 ? "\u2014" : "");
+        trr.append(td);
+      });
+      tbody.append(trr);
+    }
+    table.append(tbody); wrap.append(table);
+    return wrap;
+  }
+
+  /* --------------------------------------------------------- swimmers */
+  function openAthlete(k) { state.view = "swimmers"; state.athlete = k; render(); }
+
+  function renderSwimmersView() {
+    const panel = $("#main-panel");
+    panel.textContent = "";
+    const a = athletes.get(state.athlete);
+    if (a) return renderAthlete(panel, a);
+
+    const q = state.q.toLowerCase().trim();
+    let list = athleteList.filter((x) => (!state.team || x.team === state.team) && (!q || x.name.toLowerCase().includes(q)));
+    const head = el("div", "panel-head");
+    head.append(el("h2", null, q || state.team ? "Matching swimmers" : "All swimmers"));
+    head.append(el("p", null, `${list.length} of ${athleteList.length} \u00b7 type a name in the sidebar to narrow`));
+    panel.append(head);
+    const box = el("div", "list");
+    for (const x of list.slice(0, 400)) {
+      const b = el("button");
+      b.append(el("span", "nm", x.name));
+      b.append(el("span", "c-team", x.team));
+      const n = x.entries.length + x.relays.length;
+      b.append(el("span", "mt", `${n} ${n === 1 ? "entry" : "entries"}`));
+      b.addEventListener("click", () => openAthlete(x.key));
+      box.append(b);
+    }
+    panel.append(box);
+    if (!list.length) panel.append(el("div", "empty-note", "No swimmer matches that name."));
+    else if (list.length > 400) panel.append(el("div", "result-count", `Showing the first 400 of ${list.length}.`));
+  }
+
+  function renderAthlete(panel, a) {
+    const head = el("div", "athlete-head");
+    const back = el("button", "linkish", "\u2190 All swimmers");
+    back.addEventListener("click", () => { state.athlete = ""; render(); });
+    head.append(back);
+    head.append(el("h2", null, a.name));
+    const tags = el("div", "tags");
+    tags.append(el("span", "tag solid", a.team));
+    const ages = [...new Set(a.entries.map((e) => e.row.age).filter(Boolean))];
+    if (ages.length) tags.append(el("span", "tag", "Age " + ages.join("/")));
+    head.append(tags);
+    const actions = el("div", "actions");
+    actions.append(btn("Share swimmer", "share", () => shareCurrent(null, a), true));
+    actions.append(btn("Copy results", "copy", () => copyText(athleteText(a), "Results copied")));
+    head.append(actions);
+    panel.append(head);
+
+    const finals = a.entries.filter((e) => e.ev.round === "Finals" && FINAL_RE.test(e.sec.name) && e.row.place && !e.row.status);
+    const medals = [1, 2, 3].map((p) => finals.filter((e) => e.row.place === p).length);
+    const pb = el("div", "pb");
+    const add = (k, v) => { const d = el("div"); d.append(el("span", "v", v)); d.append(el("span", "k", k)); pb.append(d); };
+    add("Individual swims", String(a.entries.length));
+    add("Relay legs", String(a.relays.length));
+    add("Finals", String(finals.length));
+    add("Gold / Silver / Bronze", medals.join(" / "));
+    panel.append(pb);
+
+    const sh = el("div", "section-head"); sh.append(el("span", null, "Individual results")); panel.append(sh);
+    const wrap = el("div", "table-wrap");
+    const table = el("table");
+    const tr = el("tr");
+    for (const c of ["", "Event", "Round", "Session"]) tr.append(el("th", c === "" ? "c-place" : null, c));
+    tr.append(el("th", "c-time", "Time"));
+    const thead1 = el("thead"); thead1.append(tr); table.append(thead1);
+    const tb = el("tbody");
+    const sorted = [...a.entries].sort((x, y) => x.ev.session - y.ev.session || x.ev.number - y.ev.number);
+    for (const e of sorted) {
+      const r = el("tr");
+      const td0 = el("td", "c-place");
+      td0.append(el("span", "place" + (e.row.place ? medalClass(e.row, e.sec) : " none"), e.row.place ? String(e.row.place) : "\u2014"));
+      r.append(td0);
+      const td1 = el("td");
+      const link = el("button", "linkish", `#${e.ev.number} ${e.ev.title}`);
+      link.addEventListener("click", () => { state.view = "events"; state.event = e.ev.id; state.athlete = ""; render(); });
+      td1.append(link);
+      r.append(td1);
+      r.append(el("td", "c-team", e.ev.round || "\u2014"));
+      const s = sessionsById.get(e.ev.session);
+      r.append(el("td", "c-team", s ? `${s.name} \u00b7 ${s.date}` : ""));
+      const tt = el("td", "c-time result");
+      if (e.row.status) tt.append(el("span", "status " + (e.row.status === "DQ" ? "dq" : "ns"), e.row.status));
+      else tt.textContent = e.row.result || "\u2014";
+      r.append(tt);
+      tb.append(r);
+    }
+    table.append(tb); wrap.append(table); panel.append(wrap);
+    if (!sorted.length) panel.append(el("div", "empty-note", "No individual swims \u2014 this swimmer appears in relays only."));
+
+    if (a.relays.length) {
+      const sh2 = el("div", "section-head"); sh2.append(el("span", null, "Relays")); panel.append(sh2);
+      const w2 = el("div", "table-wrap");
+      const t2 = el("table");
+      const h2 = el("tr");
+      for (const c of ["", "Event", "Leg", "Team"]) h2.append(el("th", c === "" ? "c-place" : null, c));
+      h2.append(el("th", "c-time", "Time"));
+      const thead2 = el("thead"); thead2.append(h2); t2.append(thead2);
+      const b2 = el("tbody");
+      for (const e of [...a.relays].sort((x, y) => x.ev.session - y.ev.session || x.ev.number - y.ev.number)) {
+        const r = el("tr");
+        const td0 = el("td", "c-place");
+        td0.append(el("span", "place" + (e.row.place ? medalClass(e.row, e.sec) : " none"), e.row.place ? String(e.row.place) : "\u2014"));
+        r.append(td0);
+        const td1 = el("td");
+        const link = el("button", "linkish", `#${e.ev.number} ${e.ev.title}`);
+        link.addEventListener("click", () => { state.view = "events"; state.event = e.ev.id; state.athlete = ""; render(); });
+        td1.append(link); r.append(td1);
+        r.append(el("td", "c-age", String(e.leg.leg)));
+        r.append(el("td", "c-team", e.row.team + (e.row.squad ? " \u2019" + e.row.squad + "\u2019" : "")));
+        const tt = el("td", "c-time result"); tt.textContent = e.row.result || "\u2014"; r.append(tt);
+        b2.append(r);
+      }
+      t2.append(b2); w2.append(t2); panel.append(w2);
+    }
+  }
+
+  /* ----------------------------------------------------------- medals */
+  function renderMedalsView() {
+    const panel = $("#main-panel");
+    panel.textContent = "";
+    const head = el("div", "panel-head");
+    head.append(el("h2", null, "Medal table"));
+    head.append(el("p", null, "First, second and third place in every published final \u2014 individual events and relays alike. Unofficial."));
+    const actions = el("div", "actions");
+    actions.append(btn("Share table", "share", () => shareCurrent(), true));
+    actions.append(btn("Copy table", "copy", () => copyText(medalText(), "Medal table copied")));
+    head.append(actions);
+    panel.append(head);
+
+    const wrap = el("div", "table-wrap");
+    const table = el("table");
+    const tr = el("tr");
+    for (const c of ["", "School"]) tr.append(el("th", c === "" ? "c-place" : null, c));
+    for (const c of ["Gold", "Silver", "Bronze", "Total"]) tr.append(el("th", "c-time", c));
+    const thead1 = el("thead"); thead1.append(tr); table.append(thead1);
+    const tb = el("tbody");
+    medalTable.forEach((row, i) => {
+      const r = el("tr");
+      const td0 = el("td", "c-place");
+      td0.append(el("span", "place" + (i < 3 ? " m" + (i + 1) : " none"), String(i + 1)));
+      r.append(td0);
+      const td1 = el("td");
+      const b = el("button", "linkish", row.team);
+      b.addEventListener("click", () => { state.team = row.team; state.view = "swimmers"; state.athlete = ""; render(); });
+      td1.append(b); r.append(td1);
+      for (const k of [1, 2, 3, "total"]) {
+        const td = el("td", "c-time" + (k === "total" ? " result" : ""));
+        td.textContent = row[k] || "\u2014";
+        r.append(td);
+      }
+      tb.append(r);
+    });
+    table.append(tb); wrap.append(table); panel.append(wrap);
+    panel.append(el("div", "result-count", `${medalTable.length} schools on the board \u00b7 ${publishedEvents.filter((e) => e.round === "Finals").length} finals counted`));
+  }
+
+  /* ------------------------------------------------------------ share */
+  const ICONS = {
+    share: "M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3m0 0L8 7m4-4 4 4",
+    copy: "M9 9h10v10a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1ZM15 6V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h1",
+    prev: "M14 6l-6 6 6 6", next: "M10 6l6 6-6 6",
+  };
+  function btn(label, icon, onClick, primary) {
+    const b = el("button", "btn" + (primary ? " primary" : ""));
+    if (ICONS[icon]) {
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("aria-hidden", "true");
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", ICONS[icon]); svg.append(path); b.append(svg);
+    }
+    b.append(el("span", null, label));
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  let toastTimer;
+  function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+  }
+  async function copyText(text, msg) {
+    try { await navigator.clipboard.writeText(text); toast(msg); }
+    catch { 
+      const ta = el("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.append(ta); ta.select();
+      try { document.execCommand("copy"); toast(msg); } catch { toast("Copy failed \u2014 select the text manually"); }
+      ta.remove();
+    }
+  }
+  // Published pages run inside a cross-origin frame, where location.href is the frame's
+  // own URL - useless to a recipient. The build stamps in the public address when it knows it.
+  const SHARE_BASE = "__SHARE_BASE__";
+  function shareUrl() {
+    let base = SHARE_BASE.startsWith("http") ? SHARE_BASE : location.href;
+    if (!SHARE_BASE.startsWith("http")) {
+      try { if (window.top !== window.self && window.top.location.href) base = window.top.location.href; } catch { /* cross-origin */ }
+    }
+    return base.split("#")[0] + location.hash;
+  }
+  async function shareCurrent(ev, athlete) {
+    const url = shareUrl();
+    const title = ev ? `Event ${ev.number} \u2014 ${ev.title}` : athlete ? `${athlete.name} \u2014 ${athlete.team}` : "Medal table";
+    const text = `${title} \u00b7 ${DATA.meet.title}`;
+    if (navigator.share) {
+      try { await navigator.share({ title, text, url }); return; } catch (err) { if (err && err.name === "AbortError") return; }
+    }
+    copyText(`${text}\n${url}`, "Link copied");
+  }
+
+  const pad = (s, n) => String(s).padEnd(n).slice(0, n);
+  function eventText(ev) {
+    const lines = [`${DATA.meet.title}`, `Event ${ev.number}  ${ev.title}${ev.round ? " \u2014 " + ev.round : ""}`, ""];
+    for (const sec of ev.sections) {
+      const rows = sec.rows.filter(rowMatches);
+      if (!rows.length) continue;
+      lines.push(`--- ${sec.name} ---`);
+      for (const r of rows) {
+        const place = (r.place ? r.place + "." : "--").padStart(3);
+        const who = ev.relay ? `${r.team}${r.squad ? " '" + r.squad + "'" : ""}` : `${nameOf(r)} (${r.age}) ${r.team}`;
+        lines.push(`${place} ${pad(who, 40)} ${r.result || ""}`);
+        if (ev.relay && r.swimmers?.length) lines.push(`     ${r.swimmers.map((s) => s.name).join(", ")}`);
+      }
+      lines.push("");
+    }
+    lines.push(ev.url);
+    return lines.join("\n");
+  }
+  function athleteText(a) {
+    const lines = [`${a.name} \u2014 ${a.team}`, `${DATA.meet.title}`, ""];
+    for (const e of a.entries) lines.push(`${(e.row.place ? e.row.place + "." : "--").padStart(3)} ${pad(`#${e.ev.number} ${e.ev.title} (${e.ev.round})`, 56)} ${e.row.result || ""}`);
+    for (const e of a.relays) lines.push(`     ${pad(`#${e.ev.number} ${e.ev.title} \u2014 leg ${e.leg.leg}`, 56)} ${e.row.result || ""}`);
+    return lines.join("\n");
+  }
+  function medalText() {
+    const lines = [`${DATA.meet.title} \u2014 medal table (unofficial)`, ""];
+    medalTable.forEach((r, i) => lines.push(`${String(i + 1).padStart(2)}. ${pad(r.team, 20)} ${r[1]}G ${r[2]}S ${r[3]}B  (${r.total})`));
+    return lines.join("\n");
+  }
+
+  /* ----------------------------------------------------------- wiring */
+  function step(delta) {
+    const list = EVENTS.filter(eventMatches);
+    const i = list.findIndex((e) => e.id === state.event);
+    const next = list[Math.min(list.length - 1, Math.max(0, i + delta))];
+    if (next) { state.event = next.id; render(); }
+  }
+
+  $("#eventSelect").addEventListener("change", (e) => { if (e.target.value) { state.event = e.target.value; state.view = "events"; state.athlete = ""; render(); } });
+  $("#fQuery").addEventListener("input", (e) => { state.q = e.target.value; render(); });
+  $("#reset").addEventListener("click", () => {
+    Object.assign(state, { round: "", category: "", gender: "", stroke: "", team: "", q: "" });
+    render();
+  });
+  for (const [id, view] of [["tab-events", "events"], ["tab-swimmers", "swimmers"], ["tab-medals", "medals"]])
+    document.getElementById(id).addEventListener("click", () => { state.view = view; if (view === "swimmers") state.athlete = state.athlete || ""; render(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.target.matches("input, select, textarea")) return;
+    if (state.view !== "events") return;
+    if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); }
+    if (e.key === "ArrowRight") { step(1); e.preventDefault(); }
+  });
+  window.addEventListener("hashchange", () => { readHash(); render(true); });
+
+  /* ----------------------------------------------------------- render */
+  function renderChrome() {
+    $("#meet-title").textContent = DATA.meet.title;
+    document.title = DATA.meet.title;
+    const meta = $("#meet-meta");
+    meta.textContent = "";
+    meta.append(el("span", null, DATA.meet.dates.replace(/\s*-\s*/, " \u2013 ")));
+    meta.append(el("span", null, `${DATA.sessions.length} sessions`));
+    meta.append(el("span", null, "Short course \u00b7 unofficial times"));
+    const stats = $("#meet-stats");
+    stats.textContent = "";
+    for (const [n, l] of [[publishedEvents.length, "Events"], [athleteList.length, "Swimmers"], [DATA.teams.length, "Schools"], [rowCount, "Results"]]) {
+      const d = el("div");
+      d.append(el("div", "stat-n", String(n)));
+      d.append(el("div", "stat-l", l));
+      stats.append(d);
+    }
+    $("#source-link").href = DATA.meet.source;
+  }
+
+  function render(fromHash) {
+    for (const [id, k] of [["fRound", "round"], ["fCategory", "category"], ["fGender", "gender"], ["fStroke", "stroke"], ["fTeam", "team"]])
+      document.getElementById(id).value = state[k];
+    if ($("#fQuery").value !== state.q) $("#fQuery").value = state.q;
+    renderEventSelect();
+
+    const hits = state.q ? athleteList.filter((a) => a.name.toLowerCase().includes(state.q.toLowerCase())).length : 0;
+    $("#queryHint").textContent = state.q ? `${hits} swimmer${hits === 1 ? " matches" : "s match"} across the meet` : "Filters the current event; open Swimmers for a full list.";
+
+    for (const [id, view] of [["tab-events", "events"], ["tab-swimmers", "swimmers"], ["tab-medals", "medals"]])
+      document.getElementById(id).setAttribute("aria-selected", String(state.view === view));
+
+    if (state.view === "events") renderEventView();
+    else if (state.view === "swimmers") renderSwimmersView();
+    else renderMedalsView();
+
+    if (!fromHash) writeHash(true);
+  }
+
+  readHash();
+  renderChrome();
+  render(true);
+})();
+</script>
