@@ -1,7 +1,3 @@
-# The scraper's raw page cache and the legacy single-file build are not part of the app.
 cache/
 dist/
 viewer/
-.next/
-node_modules/
-*.tsbuildinfo

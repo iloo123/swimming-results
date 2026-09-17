@@ -26,10 +26,10 @@ async function getPage(url: string, base: string, timeoutMs: number): Promise<Ar
  * connection, so each page gets a timeout and a second chance before it counts
  * as "not published yet".
  */
-function pageFetcher(base: string, timeoutMs = 12_000) {
+function pageFetcher(base: string, timeoutMs = 12_000, attempts = 2) {
   return async (file: string): Promise<string> => {
     let lastErr: unknown;
-    for (let attempt = 0; attempt < 2; attempt++) {
+    for (let attempt = 0; attempt < attempts; attempt++) {
       try {
         // HY-TEK writes windows-1252, not UTF-8 (curly apostrophes in names).
         return decoder.decode(await getPage(base + file, base, timeoutMs));
@@ -50,6 +50,17 @@ const insecureVariant = (base: string) => (base.startsWith('https://') ? `http:/
 export type MeetResult = { ok: true; meet: Meet } | { ok: false; error: string; tried: string[] };
 
 /**
+ * One scrape per process per revalidate window. React's cache() only dedupes within a
+ * single render, so without this a build of 150 pages asked the source site for all 146
+ * of its pages 150 times over - enough for it to start resetting connections.
+ */
+const memo = new Map<string, { at: number; meet: Meet }>();
+
+export function forgetMeet(base: string) {
+  memo.delete(base);
+}
+
+/**
  * The whole meet, deduped per request. Individual pages sit in Next's data cache,
  * so a render after `revalidate` only re-downloads what actually changed upstream.
  *
@@ -57,12 +68,17 @@ export type MeetResult = { ok: true; meet: Meet } | { ok: false; error: string; 
  * gets a blank platform error page instead of something that says what went wrong.
  */
 export const loadMeet = cache(async (base: string): Promise<MeetResult> => {
+  const hit = memo.get(base);
+  if (hit && Date.now() - hit.at < REVALIDATE * 1000) return { ok: true, meet: hit.meet };
+
   const tried: string[] = [];
   for (const candidate of [base, insecureVariant(base)].filter(Boolean)) {
     try {
       const fetchPage = pageFetcher(candidate);
       await fetchPage('evtindex.htm'); // cheap reachability check; the result is cached for the scrape
-      return { ok: true, meet: await scrapeMeet(candidate, fetchPage) };
+      const meet = await scrapeMeet(candidate, fetchPage);
+      memo.set(base, { at: Date.now(), meet });
+      return { ok: true, meet };
     } catch (err) {
       tried.push(`${candidate} - ${describe(err)}`);
     }
@@ -70,6 +86,7 @@ export const loadMeet = cache(async (base: string): Promise<MeetResult> => {
 
   if (base === SNAPSHOT.meet.source) {
     console.error('[meet] live fetch failed, serving bundled snapshot:', tried.join(' | '));
+    memo.set(base, { at: Date.now(), meet: SNAPSHOT });
     return { ok: true, meet: SNAPSHOT };
   }
   return { ok: false, error: tried[0] ?? 'unreachable', tried };

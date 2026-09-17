@@ -36,6 +36,9 @@ export async function openMeet(_prev: OpenMeetState, formData: FormData): Promis
 /** Drops the cached copies of one meet's pages - the button to press while a meet is running. */
 export async function refreshMeet(slug: string) {
   const { decodeMeet } = await import('@/lib/meet-url');
-  updateTag(decodeMeet(slug));
+  const { forgetMeet } = await import('@/lib/meet');
+  const base = decodeMeet(slug);
+  forgetMeet(base);
+  updateTag(base);
   revalidatePath(`/m/${slug}`, 'layout');
 }

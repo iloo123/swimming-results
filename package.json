@@ -2,7 +2,6 @@
   "name": "results-mv-scrapper",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "description": "Scrapes HY-TEK Real Time Results meets from results.mv into JSON and builds a browsable single-file results viewer.",
   "scripts": {
     "dev": "next dev",
