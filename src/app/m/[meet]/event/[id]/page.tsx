@@ -9,6 +9,7 @@ import { eventText } from '@/lib/text';
 import { eventView } from '@/lib/view';
 
 export const revalidate = 300;
+export const maxDuration = 60;
 
 type Params = { params: Promise<{ meet: string; id: string }> };
 

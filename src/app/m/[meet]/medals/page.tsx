@@ -6,6 +6,7 @@ import { decodeMeet } from '@/lib/meet-url';
 import { medalText } from '@/lib/text';
 
 export const revalidate = 300;
+export const maxDuration = 60;
 
 export const metadata: Metadata = { title: 'Medal table' };
 

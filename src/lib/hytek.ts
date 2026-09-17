@@ -328,7 +328,9 @@ export async function scrapeMeet(base: string, fetchPage: PageFetcher): Promise<
       });
     }
 
-  const events = await mapWithConcurrency(metas, 12, async (meta) => {
+  // Sixteen at a time: fast enough that a cold render stays inside a function's budget,
+  // gentle enough for the small servers these meets are published on.
+  const events = await mapWithConcurrency(metas, 16, async (meta) => {
     try {
       return parseEvent(await fetchPage(meta.file), meta);
     } catch {

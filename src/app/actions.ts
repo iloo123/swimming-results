@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import { revalidatePath, updateTag } from 'next/cache';
 import { encodeMeet, normalizeMeetUrl } from '@/lib/meet-url';
-import { probeMeet } from '@/lib/meet';
+import { resolveMeetBase, SNAPSHOT_SOURCE } from '@/lib/meet';
 
 export interface OpenMeetState {
   error?: string;
@@ -18,14 +18,19 @@ export async function openMeet(_prev: OpenMeetState, formData: FormData): Promis
     return { error: err instanceof Error ? err.message : 'That link did not work.' };
   }
 
+  let resolved: string;
   try {
-    await probeMeet(base);
+    resolved = await resolveMeetBase(base);
   } catch (err) {
-    const why = err instanceof Error ? err.message : String(err);
-    return { error: `No meet found at ${base} (${why}). Use the link to any page of the meet, e.g. .../index.htm` };
+    // The meet in the bundled snapshot stays readable even when its site will not answer.
+    if (base !== SNAPSHOT_SOURCE) {
+      const why = err instanceof Error ? err.message : String(err);
+      return { error: `Could not read a meet at ${base} - ${why}` };
+    }
+    resolved = base;
   }
 
-  redirect(`/m/${encodeMeet(base)}`);
+  redirect(`/m/${encodeMeet(resolved)}`);
 }
 
 /** Drops the cached copies of one meet's pages - the button to press while a meet is running. */

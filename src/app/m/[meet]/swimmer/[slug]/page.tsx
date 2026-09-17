@@ -7,6 +7,7 @@ import { decodeMeet } from '@/lib/meet-url';
 import { athleteText } from '@/lib/text';
 
 export const revalidate = 300;
+export const maxDuration = 60;
 
 type Params = { params: Promise<{ meet: string; slug: string }> };
 

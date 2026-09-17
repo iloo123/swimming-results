@@ -5,7 +5,8 @@ import Sidebar from '@/components/Sidebar';
 import { FilterProvider } from '@/components/Filters';
 import { RememberMeet } from '@/components/RecentMeets';
 import RefreshButton from '@/components/RefreshButton';
-import { getAthletes, getEventSummaries, getMeet, getStats } from '@/lib/meet';
+import MeetUnavailable from '@/components/MeetUnavailable';
+import { getAthletes, getEventSummaries, getStats, loadMeet } from '@/lib/meet';
 import { decodeMeet } from '@/lib/meet-url';
 
 export const revalidate = 300;
@@ -13,8 +14,9 @@ export const maxDuration = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ meet: string }> }): Promise<Metadata> {
   try {
-    const meet = await getMeet(decodeMeet((await params).meet));
-    return { title: { default: meet.meet.title, template: `%s - ${meet.meet.title}` } };
+    const result = await loadMeet(decodeMeet((await params).meet));
+    if (!result.ok) return { title: 'Meet unavailable' };
+    return { title: { default: result.meet.meet.title, template: `%s - ${result.meet.meet.title}` } };
   } catch {
     return { title: 'Meet not found' };
   }
@@ -35,7 +37,10 @@ export default async function MeetLayout({
     notFound();
   }
 
-  const meet = await getMeet(base);
+  const result = await loadMeet(base);
+  if (!result.ok) return <MeetUnavailable slug={slug} base={base} tried={result.tried} />;
+
+  const meet = result.meet;
   const [events, stats, athletes] = await Promise.all([getEventSummaries(base), getStats(base), getAthletes(base)]);
 
   return (

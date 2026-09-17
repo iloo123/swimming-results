@@ -5,12 +5,20 @@ import { useRouter } from 'next/navigation';
 import { refreshMeet } from '@/app/actions';
 
 /** Results change while a meet is running; this drops the cache without a hard reload. */
-export default function RefreshButton({ slug }: { slug: string }) {
+export default function RefreshButton({
+  slug,
+  label = 'Refresh now',
+  className = 'reset',
+}: {
+  slug: string;
+  label?: string;
+  className?: string;
+}) {
   const [pending, start] = useTransition();
   const router = useRouter();
   return (
     <button
-      className="reset"
+      className={className}
       type="button"
       disabled={pending}
       onClick={() =>
@@ -20,7 +28,7 @@ export default function RefreshButton({ slug }: { slug: string }) {
         })
       }
     >
-      {pending ? 'Refreshing...' : 'Refresh now'}
+      {pending ? 'Refreshing...' : label}
     </button>
   );
 }

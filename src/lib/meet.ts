@@ -8,40 +8,96 @@ export const REVALIDATE = Number(process.env.MEET_REVALIDATE ?? 300);
 const SNAPSHOT = snapshot as unknown as Meet;
 const decoder = new TextDecoder('windows-1252');
 
-function pageFetcher(base: string) {
+const UA =
+  'Mozilla/5.0 (compatible; swim-results-viewer/1.0; +https://vercel.com)'; // some hosts refuse unknown agents
+
+async function getPage(url: string, base: string, timeoutMs: number): Promise<ArrayBuffer> {
+  const res = await fetch(url, {
+    next: { revalidate: REVALIDATE, tags: ['meet', base] },
+    headers: { 'user-agent': UA, accept: 'text/html,*/*' },
+    signal: AbortSignal.timeout(timeoutMs),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.arrayBuffer();
+}
+
+/**
+ * One page of a meet. Old timing-system hosts are slow and occasionally drop a
+ * connection, so each page gets a timeout and a second chance before it counts
+ * as "not published yet".
+ */
+function pageFetcher(base: string, timeoutMs = 12_000) {
   return async (file: string): Promise<string> => {
-    const res = await fetch(base + file, {
-      next: { revalidate: REVALIDATE, tags: ['meet', base] },
-      headers: { 'user-agent': 'results-viewer' },
-    });
-    if (!res.ok) throw new Error(`${file}: HTTP ${res.status}`);
-    // HY-TEK writes windows-1252, not UTF-8 (curly apostrophes in names).
-    return decoder.decode(await res.arrayBuffer());
+    let lastErr: unknown;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        // HY-TEK writes windows-1252, not UTF-8 (curly apostrophes in names).
+        return decoder.decode(await getPage(base + file, base, timeoutMs));
+      } catch (err) {
+        lastErr = err;
+      }
+    }
+    throw new Error(`${file}: ${describe(lastErr)}`);
   };
 }
+
+export const describe = (err: unknown) =>
+  err instanceof Error ? `${err.name === 'TimeoutError' ? 'timed out' : err.message}` : String(err);
+
+/** results.mv and its peers predate universal https; fall back if the secure host refuses us. */
+const insecureVariant = (base: string) => (base.startsWith('https://') ? `http://${base.slice('https://'.length)}` : '');
+
+export type MeetResult = { ok: true; meet: Meet } | { ok: false; error: string; tried: string[] };
 
 /**
  * The whole meet, deduped per request. Individual pages sit in Next's data cache,
  * so a render after `revalidate` only re-downloads what actually changed upstream.
- * The bundled snapshot covers the meet it was taken from if that site is unreachable.
+ *
+ * Never throws: a layout that throws escapes its own error boundary and the reader
+ * gets a blank platform error page instead of something that says what went wrong.
  */
-export const getMeet = cache(async (base: string): Promise<Meet> => {
-  try {
-    return await scrapeMeet(base, pageFetcher(base));
-  } catch (err) {
-    if (base === SNAPSHOT.meet.source) {
-      console.error('[meet] live fetch failed, serving bundled snapshot:', err);
-      return SNAPSHOT;
+export const loadMeet = cache(async (base: string): Promise<MeetResult> => {
+  const tried: string[] = [];
+  for (const candidate of [base, insecureVariant(base)].filter(Boolean)) {
+    try {
+      const fetchPage = pageFetcher(candidate);
+      await fetchPage('evtindex.htm'); // cheap reachability check; the result is cached for the scrape
+      return { ok: true, meet: await scrapeMeet(candidate, fetchPage) };
+    } catch (err) {
+      tried.push(`${candidate} - ${describe(err)}`);
     }
-    throw err;
   }
+
+  if (base === SNAPSHOT.meet.source) {
+    console.error('[meet] live fetch failed, serving bundled snapshot:', tried.join(' | '));
+    return { ok: true, meet: SNAPSHOT };
+  }
+  return { ok: false, error: tried[0] ?? 'unreachable', tried };
 });
 
-/** Cheap check used by the "open a meet" form: does this look like a HY-TEK meet? */
-export async function probeMeet(base: string) {
-  const html = await pageFetcher(base)('evtindex.htm');
-  if (!/<h[23]/i.test(html) || !/href="[^"]+\.htm/i.test(html)) throw new Error('No meet index at that address.');
-  return html;
+/** For pages rendered under a layout that already checked: the meet, or a thrown error. */
+export const getMeet = cache(async (base: string): Promise<Meet> => {
+  const result = await loadMeet(base);
+  if (!result.ok) throw new Error(result.error);
+  return result.meet;
+});
+
+/**
+ * Used by the "open a meet" form: is there a HY-TEK meet at this address, and which
+ * protocol actually answers? Returns the base to address the meet by from now on.
+ */
+export async function resolveMeetBase(base: string): Promise<string> {
+  const tried: string[] = [];
+  for (const candidate of [base, insecureVariant(base)].filter(Boolean)) {
+    try {
+      const html = await pageFetcher(candidate, 15_000)('evtindex.htm');
+      if (!/<h[23]/i.test(html) || !/href="[^"]+\.htm/i.test(html)) throw new Error('that page is not a meet index');
+      return candidate;
+    } catch (err) {
+      tried.push(`${candidate} - ${describe(err)}`);
+    }
+  }
+  throw new Error(tried.join('; '));
 }
 
 /* --------------------------------------------------------------- lookups */
@@ -234,5 +290,7 @@ export const firstPublishedEventId = cache(async (base: string) => {
   const meet = await getMeet(base);
   return (meet.events.find((e) => !e.empty) ?? meet.events[0])?.id ?? '';
 });
+
+export const SNAPSHOT_SOURCE = SNAPSHOT.meet.source;
 
 export const SNAPSHOT_MEET = { source: SNAPSHOT.meet.source, title: SNAPSHOT.meet.title, dates: SNAPSHOT.meet.dates };

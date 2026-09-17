@@ -4,6 +4,7 @@ import { getAthletes } from '@/lib/meet';
 import { decodeMeet } from '@/lib/meet-url';
 
 export const revalidate = 300;
+export const maxDuration = 60;
 
 export const metadata: Metadata = { title: 'Swimmers' };
 
